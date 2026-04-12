@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAB-06</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<!-- header start -->
+<a style="font-size: 30px" href="index.html"> Back to Home </a>
+<p></p>
+<a style="font-size: 20px" href="https://cpit405.gitlab.io">https://cpit405.gitlab.io</a>
+<br><br>
+<!-- header end -->
+ 
+<h2>Lab 06</h2>
+<h2>Like or Dislike</h2>
+
+<input type="button" id="likeBtn" value="Like" />
+<input type="button" id="dislikeBtn" value="Dislike" />
+<span id="likeCount">0</span>
+<span id="dislikeCount">0</span>
+
+<br>
+<form>
+    <label for="comment">Comments</label><br>
+    <textarea id="comment" placeholder="Write a comment..."></textarea><br>
+    <input type="submit" id="submitComment" value="Submit Comment">
+    <input type="button" id="resetBtn" value="Reset">
+</form>
+
+<div id="commentsSection"></div>
+
+<button onclick="showCookies()">show cookies</button>
+
+<script>
+var likes = 0;
+var dislikes = 0;
+var comments = [];
+var hasVoted = false;
+
+refreshCounters();
+loadFromCookies();
+
+function setCookie(key, value){
+    document.cookie = key + "=" + value + ";path=/";
+}
+
+function getCookie(key) {
+    var cookieArray = document.cookie.split(";");
+    for(var i = 0; i < cookieArray.length; i++) {
+        var cookie = cookieArray[i].trim();
+        if(cookie.indexOf(key + "=") === 0) {
+            return cookie.substring(key.length + 1);
+        }
+    }
+    return null;
+}
+
+function deleteCookie(key){
+    document.cookie = key + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+}
+
+function deleteAllCookies(){
+    var cookieArray = document.cookie.split(";");
+    for(var i = 0; i < cookieArray.length; i++) {
+        var cookieName = cookieArray[i].split("=")[0].trim();
+        document.cookie = cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+    }
+}
+
+function addLike() {   
+    if(!hasVoted){
+        likes++;
+        hasVoted = true;
+        setCookie("likes", likes);
+        setCookie("hasVoted", hasVoted);
+        refreshCounters();
+    }
+}
+
+function addDislike() {
+    if(!hasVoted){
+        dislikes++;
+        hasVoted = true;
+        setCookie("dislikes", dislikes);
+        setCookie("hasVoted", hasVoted);
+        refreshCounters();
+    }
+}
+
+function refreshCounters() {
+    var likeVal = getCookie("likes");
+    var dislikeVal = getCookie("dislikes");
+    
+    if(likeVal != null){
+        likes = parseInt(likeVal);
+    } else {
+        likes = 0;
+    }
+    
+    if(dislikeVal != null){
+        dislikes = parseInt(dislikeVal);
+    } else {
+        dislikes = 0;
+    }
+    
+    var votedCookie = getCookie("hasVoted");
+    if(votedCookie != null){
+        hasVoted = (votedCookie === "true");
+    }
+    
+    document.getElementById("likeCount").innerHTML = likes;
+    document.getElementById("dislikeCount").innerHTML = dislikes;
+    
+    if(hasVoted){
+        document.getElementById("likeBtn").disabled = true;
+        document.getElementById("dislikeBtn").disabled = true;
+    } else {
+        document.getElementById("likeBtn").disabled = false;
+        document.getElementById("dislikeBtn").disabled = false;
+    }
+    
+    displayComments();
+}
+
+function addComment() {
+    var cmnt = document.getElementById("comment").value;
+    if(cmnt.trim() != ""){
+        comments.push(cmnt);
+        setCookie("comments", JSON.stringify(comments));
+        document.getElementById("comment").value = "";
+        displayComments();
+    }
+}
+
+function displayComments() {
+    var commentsHtml = "";
+    for(var i = 0; i < comments.length; i++){
+        commentsHtml += "<p>" + comments[i] + "</p>";
+    }
+    document.getElementById("commentsSection").innerHTML = commentsHtml;
+}
+
+function resetAll() {
+    likes = 0;
+    dislikes = 0;
+    comments = [];
+    hasVoted = false;
+    deleteAllCookies();
+    refreshCounters();
+}
+
+function loadFromCookies() {
+    var savedLikes = getCookie("likes");
+    var savedDislikes = getCookie("dislikes");
+    var savedComments = getCookie("comments");
+    var savedHasVoted = getCookie("hasVoted");
+    
+    if(savedLikes != null){
+        likes = parseInt(savedLikes);
+    }
+    if(savedDislikes != null){
+        dislikes = parseInt(savedDislikes);
+    }
+    if(savedComments != null){
+        comments = JSON.parse(savedComments);
+    }
+    if(savedHasVoted != null){
+        hasVoted = (savedHasVoted === "true");
+    }
+    
+    refreshCounters();
+}
+
+function showCookies(){
+    alert(document.cookie);
+}
+
+document.getElementById("likeBtn").onclick = addLike;
+document.getElementById("dislikeBtn").onclick = addDislike;
+document.getElementById("submitComment").onclick = function(e){
+    e.preventDefault();
+    addComment();
+};
+document.getElementById("resetBtn").onclick = function(e){
+    e.preventDefault();
+    resetAll();
+};
+</script>
+
+</body>
+</html>

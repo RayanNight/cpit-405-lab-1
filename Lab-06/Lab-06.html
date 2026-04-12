@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAB-06</title>
+    <link rel="stylesheet" href="Lab-06-Style.css">
+
+</head>
+
+<body>
+<!-- header start -->
+<a style="font-size: 30px" href="index.html"> Back to Home </a>
+<p></p>
+<a style="font-size: 20px" href="https://cpit405.gitlab.io">https://cpit405.gitlab.io</a>
+<br><br>
+<!-- header end -->
+
+<div style="text-align: center; transform: scale(150%);">
+<h2>Lab 06</h2>
+<h2>Like or Dislike</h2>
+
+
+<input type="button" id="likeBtn" value="Like" onclick="addLike()" />
+<input type="button" id="dislikeBtn" value="Dislike" onclick="addDislike()" />
+
+<br>
+<label for="comment" style="font-weight: 800;">Comments</label>
+<textarea id="comment" placeholder="Write a comment..."></textarea><br>
+<button onclick="addComment()">Submit</button>
+<button onclick="reset()">Clear</button>
+
+<p id="commentSection"></p>
+
+</div>
+
+<script src="Lab-06-script.js"></script>
+</body>
+</html>
